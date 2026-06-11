@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Comate Skills 运行链路图</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+    --bg: #f5f7ff;
+    --paper: #fbfcff;
+    --ink: #172033;
+    --muted: #64708a;
+    --line: #d6dced;
+    --brand: #3855d5;
+    --brand-soft: #edf1ff;
+    --cyan: #0f8f9e;
+    --green: #247a54;
+    --amber: #9a6500;
+    --red: #a83b47;
+    --shadow: 0 20px 60px rgba(36, 49, 94, .12);
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 24px;
+    --space-2xl: 32px;
+    --space-3xl: 48px;
+}
+html { scroll-behavior: smooth; }
+body {
+    margin: 0;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at 12% 8%, rgba(56, 85, 213, .16), transparent 28%),
+        linear-gradient(135deg, #f6f8ff 0%, #eef3ff 48%, #f9fbff 100%);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    line-height: 1.65;
+}
+a { color: inherit; }
+.shell { max-width: 1320px; margin: 0 auto; padding: 48px 28px 72px; }
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) 360px;
+    gap: var(--space-2xl);
+    align-items: stretch;
+    margin-bottom: var(--space-2xl);
+}
+.hero-card, .quick-card, .panel, .lane, .source-card {
+    background: color-mix(in oklch, var(--paper) 94%, var(--brand) 6%);
+    border: 1px solid rgba(95, 114, 180, .22);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+.hero-card { padding: 40px; position: relative; overflow: hidden; }
+.hero-card::after {
+    content: "";
+    position: absolute;
+    right: -90px;
+    top: -120px;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56, 85, 213, .18), transparent 68%);
+}
+.kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 6px 12px;
+    color: var(--brand);
+    background: var(--brand-soft);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+h1 { max-width: 880px; margin: 18px 0 14px; font-size: clamp(34px, 5vw, 64px); line-height: 1.04; letter-spacing: -.055em; }
+.hero-card p { max-width: 760px; margin: 0; color: var(--muted); font-size: 17px; }
+.hero-card p.lede { color: var(--ink); font-size: 18px; line-height: 1.7; }
+.concept-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); }
+.concept-card { position: relative; padding: 24px 22px; border-radius: 22px; background: #fff; border: 1px solid rgba(95, 114, 180, .18); display: grid; gap: 10px; }
+.concept-card .concept-step { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 26px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-weight: 800; font-size: 13px; letter-spacing: .04em; }
+.concept-card h3 { margin: 0; font-size: 20px; color: var(--ink); }
+.concept-card > p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.concept-list { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.concept-list li { padding: 8px 12px; border-radius: 12px; background: #f5f7ff; color: var(--ink); font-size: 13px; }
+.concept-list li b { color: var(--brand); margin-right: 4px; }
+.flow.flow-5 { grid-template-columns: repeat(5, minmax(150px, 1fr)); }
+.gate-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); }
+.gate-card { padding: 22px; border-radius: 22px; background: #fff; border: 1px solid rgba(95, 114, 180, .18); display: grid; gap: 10px; }
+.gate-card header { display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap; }
+.gate-card header h3 { margin: 0; font-size: 18px; }
+.gate-tag { padding: 4px 10px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: 12px; font-weight: 800; letter-spacing: .03em; }
+.gate-tag.amber { background: #fff5df; color: var(--amber); }
+.gate-card p { margin: 0; font-size: 14px; color: var(--ink); line-height: 1.65; }
+.gate-card p b { color: var(--brand); margin-right: 4px; }
+.gate-card .gate-not b { color: var(--red); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-xl); }
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+.btn.primary { color: #f9fbff; background: var(--brand); }
+.btn.secondary { color: var(--brand); background: #fff; border-color: rgba(56, 85, 213, .25); }
+.quick-card { padding: 24px; }
+.quick-card h2, .panel h2 { margin: 0 0 16px; font-size: 20px; letter-spacing: -.02em; }
+.summary-list { display: grid; gap: var(--space-md); margin: 0; padding: 0; list-style: none; }
+.summary-list li { display: grid; gap: 2px; padding: 13px 14px; border-radius: 16px; background: rgba(255,255,255,.78); border: 1px solid rgba(95, 114, 180, .16); }
+.summary-list strong { font-size: 14px; }
+.summary-list span { color: var(--muted); font-size: 13px; }
+.map-wrap { padding: 24px; margin-bottom: var(--space-2xl); }
+.map-title { display: flex; justify-content: space-between; gap: var(--space-lg); align-items: end; margin-bottom: 18px; }
+.map-title h2 { margin: 0; font-size: 26px; letter-spacing: -.035em; }
+.map-title p { margin: 0; color: var(--muted); max-width: 560px; font-size: 14px; }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 18px; align-items: stretch; }
+.step {
+    position: relative;
+    display: grid;
+    gap: var(--space-md);
+    min-height: 180px;
+    padding: 20px;
+    border-radius: 22px;
+    background: #fff;
+    border: 1px solid rgba(95, 114, 180, .18);
+}
+.step:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -19px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: #fff;
+    background: var(--brand);
+    font-weight: 800;
+}
+.num { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 12px; color: var(--brand); background: var(--brand-soft); font-weight: 800; }
+.step h3 { margin: 0; font-size: 18px; }
+.step p { margin: 0; color: var(--muted); font-size: 14px; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; align-self: end; }
+.tag { padding: 3px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #f1f4fb; color: #52607a; }
+.tag.blue { color: var(--brand); background: var(--brand-soft); }
+.tag.green { color: var(--green); background: #eaf7f0; }
+.tag.amber { color: var(--amber); background: #fff5df; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); margin-bottom: var(--space-2xl); }
+.panel { padding: 26px; }
+.lanes { display: grid; gap: var(--space-lg); }
+.lane { box-shadow: none; padding: 18px; border-radius: var(--radius-md); }
+.lane h3 { display: flex; justify-content: space-between; gap: var(--space-md); align-items: center; margin: 0 0 8px; font-size: 16px; }
+.lane p { margin: 0; color: var(--muted); font-size: 14px; }
+.badge { flex: none; padding: 3px 8px; border-radius: 999px; font-size: 12px; color: var(--brand); background: var(--brand-soft); }
+.logic-table { display: grid; gap: var(--space-md); }
+.logic-row { display: grid; grid-template-columns: 150px 1fr; gap: var(--space-lg); padding: 14px; border-radius: 16px; background: #fff; border: 1px solid rgba(95, 114, 180, .16); }
+.logic-row strong { color: var(--brand); }
+.logic-row span { color: var(--muted); font-size: 14px; }
+.sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); }
+.source-card { box-shadow: none; padding: 20px; border-radius: var(--radius-md); }
+.source-card h3 { margin: 0 0 10px; font-size: 16px; }
+.source-card p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+.path {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f2f5fb;
+    color: #35405a;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    word-break: break-all;
+    text-decoration: none;
+}
+.checklist { display: grid; gap: var(--space-md); margin: 0; padding: 0; list-style: none; }
+.checklist li { display: grid; grid-template-columns: 26px 1fr; gap: var(--space-md); align-items: start; }
+.dot { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--brand); font-size: 13px; font-weight: 800; }
+.branch-flow { display: grid; grid-template-columns: repeat(5, minmax(132px, 1fr)); gap: var(--space-md); margin-top: var(--space-lg); }
+.branch-node { position: relative; padding: 16px; border-radius: 18px; background: #fff; border: 1px solid rgba(95, 114, 180, .16); }
+.branch-node:not(:last-child)::after { content: "→"; position: absolute; right: -15px; top: 50%; transform: translateY(-50%); color: var(--brand); font-weight: 900; }
+.branch-node strong { display: block; margin-bottom: 6px; color: var(--brand); font-size: 14px; }
+.branch-node span { display: block; color: var(--muted); font-size: 13px; }
+.analysis-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); }
+.analysis-card { padding: 18px; border-radius: 18px; background: #fff; border: 1px solid rgba(95, 114, 180, .16); }
+.analysis-card h3 { margin: 0 0 8px; color: var(--brand); font-size: 16px; }
+.analysis-card p { margin: 0; color: var(--muted); font-size: 14px; }
+.interactive-reader { display: grid; grid-template-columns: minmax(280px, .78fr) minmax(360px, 1fr); gap: var(--space-xl); align-items: start; }
+.reader-left, .reader-right { min-width: 0; }
+.reader-left { display: grid; gap: var(--space-lg); }
+.reader-group { display: grid; gap: 10px; padding: 18px; border-radius: 24px; background: color-mix(in oklch, #fff 88%, var(--brand) 12%); border: 1px solid rgba(56, 85, 213, .16); }
+.reader-group h3 { margin: 0; font-size: 15px; color: var(--ink); }
+.reader-node { width: 100%; display: grid; grid-template-columns: 34px 1fr; gap: var(--space-md); align-items: start; padding: 12px; border: 1px solid rgba(95, 114, 180, .14); border-radius: 16px; background: rgba(255,255,255,.72); color: inherit; text-align: left; cursor: pointer; transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease; }
+.reader-node:hover, .reader-node:focus-visible, .reader-node.is-active { transform: translateY(-1px); border-color: rgba(56, 85, 213, .46); background: #fff; box-shadow: 0 12px 28px rgba(56, 85, 213, .12); outline: none; }
+.reader-index { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 12px; background: var(--brand-soft); color: var(--brand); font-weight: 900; }
+.reader-node strong { display: block; font-size: 13.5px; color: var(--ink); }
+.reader-node span { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.reader-right { position: sticky; top: 20px; display: grid; gap: var(--space-md); }
+.live-note { min-height: 238px; padding: 24px; border-radius: 28px; color: #f8fbff; background: linear-gradient(135deg, #263a9f 0%, #3855d5 58%, #0f8f9e 100%); box-shadow: 0 24px 58px rgba(38, 58, 159, .24); }
+.live-note .eyebrow { margin: 0 0 8px; color: rgba(248,251,255,.72); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.live-note h3 { margin: 0 0 10px; font-size: 24px; line-height: 1.2; }
+.live-note p { margin: 0; color: rgba(248,251,255,.86); font-size: 14px; }
+.note-stack { display: grid; gap: var(--space-sm); }
+.reader-note { padding: 14px 16px; border-radius: 18px; border: 1px solid rgba(95, 114, 180, .14); background: rgba(255,255,255,.72); color: var(--muted); transition: opacity .18s ease, transform .18s ease, border-color .18s ease, background .18s ease; }
+.reader-note strong { display: block; color: var(--ink); font-size: 13.5px; }
+.reader-note span { display: block; font-size: 12.5px; line-height: 1.5; }
+.reader-note.is-active { transform: translateX(4px); border-color: rgba(56, 85, 213, .46); background: #fff; color: var(--ink); box-shadow: 0 12px 28px rgba(56, 85, 213, .1); }
+.interactive-reader.is-filtering .reader-node:not(.is-active), .interactive-reader.is-filtering .reader-note:not(.is-active) { opacity: .38; }
+.doc-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: var(--space-xl); align-items: start; }
+.doc-index { position: sticky; top: 20px; display: grid; gap: var(--space-sm); padding: 18px; border-radius: 20px; background: #fff; border: 1px solid rgba(95, 114, 180, .16); }
+.doc-index a { color: var(--muted); text-decoration: none; font-size: 13px; }
+.doc-index a:hover { color: var(--brand); }
+.doc-stack { display: grid; gap: var(--space-2xl); }
+.doc-block { display: grid; gap: var(--space-md); }
+.doc-intro { padding: 22px; border-radius: 22px; background: linear-gradient(135deg, #fff 0%, #f4f7ff 100%); border: 1px solid rgba(56, 85, 213, .18); display: grid; gap: var(--space-md); }
+.doc-intro h3 { margin: 0; color: var(--ink); font-size: 18px; display: flex; align-items: center; gap: var(--space-sm); }
+.doc-intro h3 .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-weight: 700; letter-spacing: .04em; }
+.doc-intro .role { margin: 0; padding: 12px 14px; border-radius: 12px; background: #fff; border: 1px solid rgba(56, 85, 213, .18); color: var(--ink); font-size: 14px; }
+.doc-intro .role strong { color: var(--brand); margin-right: 6px; }
+.doc-intro h4 { margin: 4px 0 0; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.doc-intro ul.framework { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.doc-intro ul.framework li { padding: 12px 14px; border-radius: 12px; background: #fff; border: 1px solid rgba(95, 114, 180, .14); font-size: 13.5px; color: var(--ink); line-height: 1.6; }
+.doc-intro ul.framework li b { color: var(--brand); display: block; margin-bottom: 2px; font-size: 13px; }
+.doc-intro ul.framework li span.tag { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(15, 143, 158, .12); color: var(--cyan); font-size: 11px; font-weight: 700; vertical-align: 1px; }
+.doc-card { overflow: hidden; border-radius: 22px; background: #fff; border: 1px solid rgba(95, 114, 180, .16); }
+.doc-card summary { cursor: pointer; padding: 18px 20px; color: var(--brand); font-weight: 800; }
+.doc-card pre { max-height: 520px; margin: 0; padding: 0 20px 20px; overflow: auto; color: #26314d; font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; }
+.footer-note { color: var(--muted); text-align: center; font-size: 13px; margin-top: var(--space-2xl); }
+.cdp-detail { margin-top: var(--space-md); border-radius: 14px; border: 1px solid rgba(15,143,158,.22); background: rgba(15,143,158,.05); overflow: hidden; }
+.cdp-detail summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; color: var(--cyan); list-style: none; display: flex; align-items: center; gap: 6px; }
+.cdp-detail summary::before { content: "▶"; font-size: 10px; transition: transform .18s ease; }
+.cdp-detail[open] summary::before { transform: rotate(90deg); }
+.cdp-body { padding: 0 14px 14px; display: grid; gap: var(--space-sm); }
+.cdp-body p { margin: 0; font-size: 13px; color: var(--ink); line-height: 1.65; }
+.cdp-body ul { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.cdp-body ul li { font-size: 13px; color: var(--muted); }
+.cdp-body code { padding: 1px 5px; border-radius: 6px; background: rgba(15,143,158,.12); color: var(--cyan); font-size: 12px; }
+@media (max-width: 980px) {
+    .hero, .grid, .sources, .branch-flow, .analysis-grid, .doc-layout, .interactive-reader, .concept-grid, .gate-grid { grid-template-columns: 1fr; }
+    .flow, .flow.flow-5 { grid-template-columns: 1fr; }
+    .reader-right, .doc-index { position: static; }
+    .step:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -22px; transform: translateX(50%); }
+    .branch-node:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -17px; transform: translateX(50%); }
+    .logic-row { grid-template-columns: 1fr; gap: var(--space-sm); }
+}
+@media print {
+    body { background: #fff; }
+    .hero-card, .quick-card, .panel, .lane, .source-card { box-shadow: none; }
+    .btn { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="shell">
+    <section class="hero" id="top">
+        <div class="hero-card">
+            <span class="kicker">新手版 · Comate 在 fe-aiop 怎么干活</span>
+            <h1>三句话理解 Skills 运行机制</h1>
+            <p class="lede">① 你提需求 → ② Comate 自动加载这个仓库的规则 → ③ 命中专业任务时调用对应 Skill 收尾。整页围绕这三句话展开，从浅到深，可按顺序读完。</p>
+            <div class="actions">
+                <a class="btn primary" href="#concepts">先看 3 个核心概念</a>
+                <a class="btn secondary" href="#flow">再看 5 步主流程</a>
+                <a class="btn secondary" href="#interactive-map">动手玩联动阅读器</a>
+            </div>
+        </div>
+        <aside class="quick-card" aria-label="先认识三个名词">
+            <h2>先认识三个名词</h2>
+            <ul class="summary-list">
+                <li><strong>规则（Rules）</strong><span>放在仓库里的"自动加载说明书"，告诉 Agent 该怎么做。</span></li>
+                <li><strong>技能（Skill）</strong><span>专业任务的工作流，比如 code-validation、visual-verify。</span></li>
+                <li><strong>闸门（Gate）</strong><span>必须通过的检查点，没过就不能交付。</span></li>
+            </ul>
+        </aside>
+    </section>
+
+    <section class="panel" id="concepts">
+        <div class="map-title">
+            <div>
+                <h2>第一步：3 个核心概念</h2>
+                <p>整套机制其实只有三块拼图。看懂这一节，下面所有内容都会更顺。</p>
+            </div>
+        </div>
+        <div class="concept-grid">
+            <article class="concept-card">
+                <span class="concept-step">01</span>
+                <h3>规则文件</h3>
+                <p>放在 <code>.comate/rules/</code> 下的 <code>.mdr</code> 文件。带 <code>alwaysApply: true</code> 的会在每次会话自动加载，相当于"团队默认共识"。</p>
+                <ul class="concept-list">
+                    <li><b>base.mdr</b>：协作总闸（启动、UI、闸门）</li>
+                    <li><b>01-project-introduce</b>：仓库地图</li>
+                    <li><b>02-programming-style</b>：代码风格</li>
+                </ul>
+            </article>
+            <article class="concept-card">
+                <span class="concept-step">02</span>
+                <h3>Skill</h3>
+                <p>每个 Skill = 一个独立的"专业子流程 + 工具集 + 规则"。任务命中描述关键词时，Agent 必须调用 Skill，而不是凭经验自己实现。</p>
+                <ul class="concept-list">
+                    <li><b>code-validation</b>：CR 风格代码审查</li>
+                    <li><b>visual-verify</b>：UI 真机视觉验证</li>
+                    <li><b>auto-commit</b>：智能 commit 提交</li>
+                </ul>
+            </article>
+            <article class="concept-card">
+                <span class="concept-step">03</span>
+                <h3>Gate（闸门）</h3>
+                <p>由 base.mdr 强制规定：什么任务必须经过哪个 Skill 才能收尾。Gate 没过 = 任务没完成，不能跳过、不能用 lint/build 替代。</p>
+                <ul class="concept-list">
+                    <li><b>代码改动</b> → 必走 code-validation</li>
+                    <li><b>UI 改动</b> → 必走 visual-verify</li>
+                    <li><b>提交代码</b> → 必走 auto-commit</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <section class="panel map-wrap" id="flow">
+        <div class="map-title">
+            <div>
+                <h2>第二步：一次任务的 5 步主流程</h2>
+                <p>不管你提什么需求，背后都按这 5 步执行。UI 任务在第 4 步会多一道视觉闸门，其他完全一样。</p>
+            </div>
+            <a class="btn secondary" href="#top">回到顶部</a>
+        </div>
+        <div class="flow flow-5" aria-label="Skills 运行主链路">
+            <article class="step">
+                <div class="num">1</div>
+                <h3>读懂需求</h3>
+                <p>判断这次是问问题、改代码、调 UI 还是提交代码。</p>
+                <div class="tag-row"><span class="tag blue">意图识别</span></div>
+            </article>
+            <article class="step">
+                <div class="num">2</div>
+                <h3>加载仓库规则</h3>
+                <p><code>base.mdr</code> 等 alwaysApply 文件常驻生效，先约束工作方式。</p>
+                <div class="tag-row"><span class="tag blue">alwaysApply</span></div>
+            </article>
+            <article class="step">
+                <div class="num">3</div>
+                <h3>命中并加载 Skill</h3>
+                <p>命中专业任务就调用对应 Skill，按 Skill 步骤执行。</p>
+                <div class="tag-row"><span class="tag green">skill()</span></div>
+            </article>
+            <article class="step">
+                <div class="num">4</div>
+                <h3>过 Gate（闸门）</h3>
+                <p>代码改动跑 code-validation；UI 还要跑 visual-verify。</p>
+                <div class="tag-row"><span class="tag amber">阻塞</span></div>
+            </article>
+            <article class="step">
+                <div class="num">5</div>
+                <h3>修复并交付</h3>
+                <p>有问题就改完再跑一遍，全过才算结束。</p>
+                <div class="tag-row"><span class="tag blue">闭环</span></div>
+            </article>
+        </div>
+    </section>
+
+    <section class="panel" id="gates">
+        <div class="map-title">
+            <div>
+                <h2>第三步：两道必经闸门</h2>
+                <p>大部分任务都会撞到这两道。看懂触发条件和动作，就知道为什么 Comate 偶尔会"突然多一步"。</p>
+            </div>
+        </div>
+        <div class="gate-grid">
+            <article class="gate-card">
+                <header><span class="gate-tag">code-validation</span><h3>代码闸门</h3></header>
+                <p class="gate-when"><b>什么时候触发：</b>任何代码改动后必走，包括新增、修改、重构。</p>
+                <p class="gate-do"><b>它做什么：</b>用 <code>common/RULES.md</code> + <code>fe-aiop/RULES.md</code> 对改动行做 CR 风格审查，违规必修。</p>
+                <p class="gate-not"><b>不能用什么替代：</b>本地 lint、build、人工"我看了一遍"都不算。</p>
+            </article>
+            <article class="gate-card">
+                <header><span class="gate-tag amber">visual-verify</span><h3>视觉闸门（仅 UI 任务）</h3></header>
+                <p class="gate-when"><b>什么时候触发：</b>布局、样式、颜色、间距、交互或响应式有变更时。</p>
+                <p class="gate-do"><b>它做什么：</b>连真实 Chrome（CDP localhost:9222），跑 DOM 断言 + 截图，留可追溯证据。</p>
+                <p class="gate-not"><b>不能用什么替代：</b>不能"我觉得对就行"，也不能跳过 CDP 直接想象结果。</p>
+                <details class="cdp-detail">
+                    <summary>什么是 CDP localhost:9222？</summary>
+                    <div class="cdp-body">
+                        <p><b>CDP（Chrome DevTools Protocol）</b>是 Chrome 内置的远程控制接口，通过 <b>9222 端口的 WebSocket</b> 对外暴露。任何程序连上后可以：</p>
+                        <ul>
+                            <li>查询 DOM 结构 / 检查元素尺寸与位置</li>
+                            <li>截图（真实渲染结果，非模拟）</li>
+                            <li>在页面上下文中执行 JavaScript</li>
+                            <li>模拟点击、填写表单、页面导航</li>
+                            <li>监听 console.error / console.warn 输出</li>
+                        </ul>
+                        <p>F12 开发者工具本身就是 CDP 的内置客户端——<b>visual-verify 通过同一接口把 F12 能做的操作全部自动化</b>。9222 是 Chrome 的约定默认端口，可通过环境变量 <code>CDP_HOST=localhost:xxxx</code> 覆盖。</p>
+                    </div>
+                </details>
+            </article>
+        </div>
+    </section>
+
+    <section class="panel" id="interactive-map">
+        <div class="map-title">
+            <div>
+                <h2>第四步：动手玩联动阅读器</h2>
+                <p>读完上面的概念和流程后，把鼠标移到左侧任意节点（或键盘 Tab 聚焦），右侧会实时显示这一节点是干什么的，左右两边同步高亮——按节奏摸一遍，整套机制就熟了。</p>
+            </div>
+        </div>
+        <div class="interactive-reader" data-reader>
+            <div class="reader-left" aria-label="可交互链路节点">
+                <section class="reader-group" aria-labelledby="reader-main-title">
+                    <h3 id="reader-main-title">主链路：需求如何进入 Skill</h3>
+                    <button class="reader-node is-active" type="button" data-node="intent"><span class="reader-index">1</span><span><strong>用户意图识别</strong><span>先判断是解释、改代码、UI、安全、提交还是 Figma。</span></span></button>
+                    <button class="reader-node" type="button" data-node="always"><span class="reader-index">2</span><span><strong>alwaysApply 仓库规则</strong><span>.comate/rules/*.mdr 常驻生效，先约束工作方式。</span></span></button>
+                    <button class="reader-node" type="button" data-node="skill"><span class="reader-index">3</span><span><strong>Skill 匹配与加载</strong><span>命中专门能力后，必须先加载 Skill 再行动。</span></span></button>
+                    <button class="reader-node" type="button" data-node="gate"><span class="reader-index">4</span><span><strong>Gate 闭环</strong><span>代码变更走 code-validation，UI 变更走 visual-verify。</span></span></button>
+                </section>
+                <section class="reader-group" aria-labelledby="reader-doc-title">
+                    <h3 id="reader-doc-title">文档角色：每份原文档负责什么</h3>
+                    <button class="reader-node" type="button" data-node="base"><span class="reader-index">A</span><span><strong>base.mdr</strong><span>总闸：启动、UI、校验、视觉验证的强制流程。</span></span></button>
+                    <button class="reader-node" type="button" data-node="project"><span class="reader-index">B</span><span><strong>01-project-introduce</strong><span>事实层：仓库定位、技术栈、目录职责和放置规则。</span></span></button>
+                    <button class="reader-node" type="button" data-node="style"><span class="reader-index">C</span><span><strong>02-programming-style</strong><span>风格层：文件体量、函数职责、命名和复用优先级。</span></span></button>
+                    <button class="reader-node" type="button" data-node="repo-rules"><span class="reader-index">D</span><span><strong>fe-aiop/RULES.md</strong><span>项目 CR 断言：组件、样式、数据请求、边界、路由。</span></span></button>
+                    <button class="reader-node" type="button" data-node="common-rules"><span class="reader-index">E</span><span><strong>common/RULES.md</strong><span>通用 CR 底线：类型、日志、effect 清理、导出结构。</span></span></button>
+                </section>
+                <section class="reader-group" aria-labelledby="reader-ui-title">
+                    <h3 id="reader-ui-title">UI 专用分支：为什么会多一步</h3>
+                    <button class="reader-node" type="button" data-node="ui-design"><span class="reader-index">U1</span><span><strong>先读 UI 设计规则</strong><span>布局、颜色、间距、交互都属于 UI 任务。</span></span></button>
+                    <button class="reader-node" type="button" data-node="ui-cdp"><span class="reader-index">U2</span><span><strong>确认 CDP 可用</strong><span>localhost:9222 不通就不能继续做视觉验证。</span></span></button>
+                    <button class="reader-node" type="button" data-node="ui-proof"><span class="reader-index">U3</span><span><strong>DOM + 截图证据</strong><span>不是口头说看起来对，而是要有断言和截图结果。</span></span></button>
+                </section>
+            </div>
+            <aside class="reader-right" aria-live="polite">
+                <section class="live-note" data-live-note>
+                    <p class="eyebrow">当前 hover 节点</p>
+                    <h3 data-live-title>用户意图识别</h3>
+                    <p data-live-desc>先判断这次任务属于哪一类，因为不同任务会触发不同 Skill：例如 UI 改动必须走 visual-verify，代码变更必须走 code-validation，安全扫描必须走 code-security-test。</p>
+                </section>
+                <div class="note-stack" aria-label="全部框架注释">
+                    <article class="reader-note is-active" data-note="intent"><strong>用户意图识别</strong><span>决定 Skill 是否触发，是整套系统的入口。</span></article>
+                    <article class="reader-note" data-note="always"><strong>alwaysApply 仓库规则</strong><span>不靠用户提醒，进入 fe-aiop 就自动加载。</span></article>
+                    <article class="reader-note" data-note="skill"><strong>Skill 匹配与加载</strong><span>专业任务先加载专业工作流，不能凭经验绕过。</span></article>
+                    <article class="reader-note" data-note="gate"><strong>Gate 闭环</strong><span>把实现结果变成可检查、可追踪的通过/失败。</span></article>
+                    <article class="reader-note" data-note="base"><strong>base.mdr</strong><span>负责全局协作秩序，是 fe-aiop 的总控制面。</span></article>
+                    <article class="reader-note" data-note="project"><strong>01-project-introduce</strong><span>负责告诉 Agent 仓库是什么和代码应该放哪里。</span></article>
+                    <article class="reader-note" data-note="style"><strong>02-programming-style</strong><span>负责保证新增代码看起来像这个仓库原生代码。</span></article>
+                    <article class="reader-note" data-note="repo-rules"><strong>fe-aiop/RULES.md</strong><span>负责把项目规则变成 CR 审查项。</span></article>
+                    <article class="reader-note" data-note="common-rules"><strong>common/RULES.md</strong><span>负责跨仓库通用质量底线。</span></article>
+                    <article class="reader-note" data-note="ui-design"><strong>先读 UI 设计规则</strong><span>UI 改动前置，不等写完再补。</span></article>
+                    <article class="reader-note" data-note="ui-cdp"><strong>确认 CDP 可用</strong><span>CDP（Chrome DevTools Protocol）是 Chrome 在 localhost:9222 暴露的 WebSocket 接口，visual-verify 通过它查询 DOM、截图、执行 JS——本质是把 F12 的操作自动化。9222 不通时不能伪造验证结果。</span></article>
+                    <article class="reader-note" data-note="ui-proof"><strong>DOM + 截图证据</strong><span>最终用断言和截图证明页面真的符合预期。</span></article>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <section class="panel" id="docs-full">
+        <div class="map-title">
+            <div>
+                <h2>第五步：想深挖时再翻原始文档</h2>
+                <p>下方是当前链路涉及的 5 份规则文档原文，配套加了"作用 + 内部框架拆解"卡片。新手可以先跳过，等想验证某条规则真的存在时再展开。</p>
+            </div>
+        </div>
+        <div class="doc-layout">
+            <nav class="doc-index" aria-label="文档目录">
+                <a href="#doc-base">.comate/rules/base.mdr</a>
+                <a href="#doc-project">.comate/rules/01-project-introduce.mdr</a>
+                <a href="#doc-style">.comate/rules/02-programming-style.mdr</a>
+                <a href="#doc-fe-aiop-rules">code-validation fe-aiop/RULES.md</a>
+                <a href="#doc-common-rules">code-validation common/RULES.md</a>
+            </nav>
+            <div class="doc-stack">
+                <article class="doc-intro" aria-labelledby="doc-base-title">
+                    <h3 id="doc-base-title">.comate/rules/base.mdr <span class="tag">always-apply 总闸</span></h3>
+                    <p class="role"><strong>作用：</strong>fe-aiop 的协作基线。所有 Comate 会话进入这个仓库时都会自动加载，定义"做事顺序、必须经过的闸门、UI/启动等强约束"，是其他规则文件的入口。</p>
+                    <h4>内部框架拆解</h4>
+                    <ul class="framework">
+                        <li><b>① Basic（仓库认知前置）</b>动手前先理解和复用既有的 page / module / component / atom 结构，新增能力必须与现有目录、命名、状态管理保持一致。共享组件需查 <code>.comate/components/</code> 文档。</li>
+                        <li><b>② Agent dev startup workflow（启动协议）</b>规定 Node ≥24.4.1、pnpm ≥10.13.1；优先用 <code>sh dev.sh</code>（注入 HOST/PROXY/PROXY_TYPE）；不同代理（默认 / xstp-xxx / tiance / mock）有不同 cookie/host 准备步骤；启动后必须读取 Vite 真实 URL 而不是猜测。</li>
+                        <li><b>③ UI design rule loading（UI 触发器）</b>任何 UI/UX 视觉变更前必须读 <code>05-ui-design.md</code>，把视觉变更收口到设计规则文件。</li>
+                        <li><b>④ UI interaction constraints（强制 UI 约束）</b>全局生效。例如删除入口禁止使用红色，必须沿用主色 <code>#3855d5</code>，红色仅保留给删除确认弹窗里的确认按钮。</li>
+                        <li><b>⑤ Code validation gate（代码闸门）<span class="tag">阻塞</span></b>每个实现批次完成后必须用独立 subagent 调用 <code>code-validation</code>，CR 风格审查改动行；不允许用本地 build/lint/test 替代，也不允许推迟到最终回复后。</li>
+                        <li><b>⑥ Visual verification gate（视觉闸门）<span class="tag">阻塞</span></b>UI 任务必须先确认 CDP localhost:9222 可达，再触发 <code>visual-verify</code> 跑 DOM 断言+截图；不可"模拟"视觉验证。</li>
+                    </ul>
+                </article>
+                <details class="doc-card" id="doc-base" open>
+                    <summary>.comate/rules/base.mdr</summary>
+                    <pre>---
+alwaysApply: true
+description: &quot;fe-aiop collaboration baseline&quot;
+---
+## Basic
+When implementing work in `fe-aiop`, keep only constraints that are directly tied to this repository:
+
+1. Understand and reuse the existing page patterns, directory structure, shared components, and state organization before introducing anything new.
+2. Prefer the existing organization already used in `src/pages`, `src/modules`, `src/components`, and `src/proComponents`.
+3. When adding new capabilities, keep directory placement, naming, state management, and UI choices consistent with the current codebase.
+4. When using shared components, refer to `.comate/components/` for component capability documentation (props, usage patterns, and constraints).
+
+## Agent dev startup workflow
+
+When an agent needs to start local `fe-aiop`, use the repository workflow instead of guessing:
+
+1. Before starting, confirm `Node.js &gt;= 24.4.1 &lt; 25` (recommended `24.4.1`), `pnpm &gt;= 10.13.1`, and install dependencies with `pnpm install`.
+2. Always prefer `sh dev.sh` over a direct `pnpm start`, because it injects required env vars such as `HOST`, `PROXY_TARGET`, `PROXY`, and `PROXY_TYPE`.
+3. Use the exact startup command for the target environment:
+   - Default online proxy: `sh dev.sh`
+   - Offline XSTP proxy: `sh dev.sh xstp-xxx`
+4. For offline joint debugging with `xstp-xxx`, follow `xstp-config.js` exactly:
+   - If the user has not provided a usable XSTP name, ask for the target offline environment first.
+   - Add or confirm a config item whose `name` starts with `xstp-`, with `hostname`, `serverPort`, `fsrPort`, and optional `eos`.
+   - `dev.sh xstp-xxx` passes `PROXY=xstp-xxx` and `PROXY_TYPE=dev`; `xstp-config.js` then resolves the config and starts `pnpm start` with `PROXY_TARGET` from `eos` or `hostname:serverPort`.
+   - If the matching `name` does not exist, startup exits instead of falling back, so verify the exact name before recommending the command.
+   - After the config is ready, start it with the matching command, for example `sh dev.sh xstp-zjh`.
+5. Before asking the user to verify pages locally, remind them of the environment-specific setup:
+   - Default online proxy: open `http://imis.baijiahao.baidu.com/bjhmis`, copy the required login cookie such as `PHPSESSID` from `Application -&gt; Cookies`, and write the same cookie into the local debugging domain.
+   - `tiance`: add host mapping `127.0.0.1 dev.tiance.baidu-int.com`, open `https://tiance.baidu-int.com/taceo`, and copy `UUAP_S_TOKEN` into that domain's local cookie storage.
+   - `mock`: use `localhost`; if cross-origin restrictions appear, use a Chrome profile with cross-origin disabled.
+   - Offline `xstp-xxx`: make sure the target environment itself is reachable.
+6. If the task only needs code changes or static review, do not start the dev server.
+7. Never guess the local access URL. Read the actual Vite output after startup and report only the printed URL.
+8. After startup, always return the actual access URL, and also provide these full page URLs based on that origin:
+   - Tianmu page: `&lt;access-origin&gt;/aixop/author/manage/all`
+   - IMIS page: `&lt;access-origin&gt;/aixop/imis/`
+   - Tianyan page: `&lt;access-origin&gt;/aixam/new`
+
+## UI design rule loading
+
+When a task involves any UI/UX visual changes — including layout updates, style adjustments, component appearance, spacing, colors, typography, responsiveness, or interaction behavior — the agent MUST read and follow `05-ui-design.md` before making changes.
+
+## UI interaction constraints
+
+These rules apply globally across all pages in `fe-aiop`, regardless of component type or context:
+
+### Delete action color
+
+**Delete triggers must never use red / danger color.** This applies to:
+- Table row operation text links (e.g. &quot;删除&quot;)
+- Toolbar / action-bar icon or text buttons
+- Any other inline delete entry points
+
+Use the same primary color (`#3855d5`) as other operations. The danger color (`#f5222d`) is reserved exclusively for the **confirm button inside a delete confirmation modal** (e.g. `okButtonProps={{danger: true}}`), not for the trigger that opens it.
+
+## Code validation gate
+
+For any task that changes code, treat code validation as a blocking post-implementation gate.
+
+After completing each implementation batch, MUST activate the `code-validation` skill in a standalone subagent before running final validation, reporting completion, or starting an unrelated implementation batch.
+
+The standalone subagent must load the applicable repository rules, review the current changed lines as a CR-style review, and report violations. Fix any reported violations before continuing.
+
+Do not defer code validation until after the final response. Do not treat local build, lint, or tests as a replacement for `code-validation`.
+
+## Visual verification gate
+
+When the task is UI-related:
+
+1. Activate the `visual-verify` skill immediately after stating the UI determination.
+2. Verify Chrome DevTools Protocol is available at `localhost:9222` before any browser automation.
+3. Stop the task and ask the user to start Chrome with remote debugging if `http://localhost:9222/json/version` does not return a valid Chrome/CDP response.
+4. Do not simulate visual verification without a real CDP connection.</pre>
+                </details>
+
+                <article class="doc-intro" aria-labelledby="doc-project-title">
+                    <h3 id="doc-project-title">.comate/rules/01-project-introduce.mdr <span class="tag">事实层</span></h3>
+                    <p class="role"><strong>作用：</strong>把 fe-aiop 这个仓库"是什么、用什么技术、目录怎么分层"固化下来，回答"我能在哪里写、应该在哪里写"。是后续编码风格和编排决策的事实底座。</p>
+                    <h4>内部框架拆解</h4>
+                    <ul class="framework">
+                        <li><b>① Project Summary（定位）</b>明确这是 PC 端 React + TypeScript 管理后台，业务围绕已有页面模板、模块、组件展开——避免新人凭空造架构。</li>
+                        <li><b>② Core Tech Stack（技术栈口径）</b>以 <code>package.json</code> 为唯一权威；列出 React 18.2.0 / TS 5.6.2 / Vite 5.3.2 / Jotai 2.6.4 / antd 5.20.2 / RR-DOM 6.22.3 / Less + CSS Modules，让 Agent 不要乱推荐 Tailwind/styled-components 等。</li>
+                        <li><b>③ Main Directories（分层地图）</b>列出 src 下 14 个一级目录的职责（api/atoms/components/hooks/modules/pages/proComponents/query/routes/...），是文件放置决策的索引。</li>
+                        <li><b>④ File Placement Rules（放置规则）<span class="tag">硬约束</span></b>5 条：必须落到既有目录；只在单页面用的就放页面下；通用 utils 在 <code>src/utils/</code>；通用 API 在 <code>src/api/</code> 而页面私有 API 紧贴业务；新增页面级抽象前必须先看 <code>src/proComponents/</code>。</li>
+                    </ul>
+                </article>
+                <details class="doc-card" id="doc-project">
+                    <summary>.comate/rules/01-project-introduce.mdr</summary>
+                    <pre>---
+alwaysApply: true
+---
+
+# fe-aiop Project Overview
+
+## Project Summary
+
+- A React + TypeScript project for PC-side admin pages.
+- The repository is built around existing page templates, business modules, and shared components.
+
+## Core Tech Stack
+
+Use `package.json` as the source of truth for exact versions:
+- React 18.2.0 + TypeScript 5.6.2
+- Vite 5.3.2
+- Jotai 2.6.4
+- antd 5.20.2
+- React Router DOM 6.22.3
+- Less + CSS Modules
+
+## Main Directories
+
+```text
+fe-aiop/src/
+├── api/             # API definitions and request wrappers
+├── assets/          # Static assets
+├── atoms/           # Global Jotai state
+├── components/      # Shared base components
+├── dicts/           # Dictionaries and configs
+├── hooks/           # Shared hooks
+├── interface/       # Type definitions
+├── layout/          # Layout components
+├── modules/         # Business reusable modules
+├── pages/           # Business pages
+├── proComponents/   # Page-level abstractions and schema/proPage capabilities
+├── query/           # react-query related wrappers
+├── routes/          # Route configuration
+├── styles/          # Global styles
+└── utils/           # Utility functions
+```
+
+## File Placement Rules
+
+1. New files must stay inside the existing directory system and match the current business layering.
+2. Components, utilities, and atoms used by only one business page should live inside that page's directory.
+3. Shared utility functions belong in `src/utils/`.
+4. Shared API wrappers belong in `src/api/`, while page-private API code should stay close to the business directory.
+5. Check `src/proComponents/` before building a new reusable page abstraction.</pre>
+                </details>
+
+                <article class="doc-intro" aria-labelledby="doc-style-title">
+                    <h3 id="doc-style-title">.comate/rules/02-programming-style.mdr <span class="tag">风格层</span></h3>
+                    <p class="role"><strong>作用：</strong>在"事实层"的目录基础上，规定每个文件、每个函数、每个标识符长什么样，是 code-validation 风格类断言的上游来源。</p>
+                    <h4>内部框架拆解</h4>
+                    <ul class="framework">
+                        <li><b>① Basic Constraints（体量与拆分）</b>单文件大约 300 行，超出按职责拆；函数单一职责；新代码必须沿用本仓库已有的目录结构和实现模式。</li>
+                        <li><b>② Naming Conventions（命名）<span class="tag">硬约束</span></b>组件文件 PascalCase（与 src/components、src/modules、src/pages 一致）；工具文件 camelCase；事件回调用 <code>handleXxx</code>；内部 helper 沿用 <code>_xxx</code> 前缀以区分导出 API。</li>
+                        <li><b>③ Implementation Guidance（实现优先级）</b>新建之前先复用既有组件 / hooks / utils；复杂业务逻辑下沉到独立模块，避免页面入口文件膨胀。</li>
+                    </ul>
+                </article>
+                <details class="doc-card" id="doc-style">
+                    <summary>.comate/rules/02-programming-style.mdr</summary>
+                    <pre>---
+alwaysApply: true
+---
+
+# fe-aiop Coding Style Constraints
+
+## Basic Constraints
+
+1. Keep a single file within about 300 lines when possible; split by responsibility when it grows beyond that.
+2. Keep each function focused on a single responsibility, and prefer separating business logic, render assembly, and event handling.
+3. New code must match the existing directory structure, naming style, and implementation patterns already used in this repository.
+
+## Naming Conventions
+
+1. React component files use `PascalCase`, consistent with existing files in `src/components`, `src/modules`, and `src/pages`.
+2. Utility files use `camelCase`, consistent with `src/utils` and page-local `utils` files.
+3. Event handlers should prefer the `handleXxx` naming pattern.
+4. Internal helper functions may continue using the existing `_xxx` pattern when it helps distinguish them from exported APIs.
+
+## Implementation Guidance
+
+1. Reuse existing components, hooks, and utilities before adding new ones.
+2. Move complex business logic into focused modules instead of letting page entry files grow too large.</pre>
+                </details>
+
+                <article class="doc-intro" aria-labelledby="doc-fe-aiop-rules-title">
+                    <h3 id="doc-fe-aiop-rules-title">code-validation validators/fe-aiop/RULES.md <span class="tag">CR 断言层</span></h3>
+                    <p class="role"><strong>作用：</strong>code-validation skill 跑在 fe-aiop 上时加载的"项目专属审查规则"。把 base.mdr 的精神和团队历史踩坑沉淀成可机械检查的条目，是闸门"不通过 → 必须修"的判据。</p>
+                    <h4>内部框架拆解（8 条规则）</h4>
+                    <ul class="framework">
+                        <li><b>① UI 组件优先级</b>优先 <code>@baidu/aiop-ui</code>，再退到 antd，最后才自研——避免重复造轮子和样式割裂。</li>
+                        <li><b>② 样式方案</b>Tailwind 原子类用于布局/间距/字号；复杂逻辑/动画走 <code>.module.less</code>；禁止行内 style 和全局 less 污染。</li>
+                        <li><b>③ 数据请求</b>组件内异步用 <code>useRequest</code>；跨组件共享数据用 <code>atomWithQuery</code>；禁止裸 <code>useEffect + fetch</code>。</li>
+                        <li><b>④ API 层组织</b>所有请求放 <code>src/api/</code> 或页面私有 api 目录，不允许组件内直接写 fetch/axios。</li>
+                        <li><b>⑤ MPA 子应用边界<span class="tag">硬约束</span></b>tianmu/tianyan/imis 等子应用不能跨包直接 import 业务代码，必须通过共享层。</li>
+                        <li><b>⑥ ProPageKey 注册</b>新增 ProPage 必须按规范注册 key，否则 schema 体系无法识别。</li>
+                        <li><b>⑦ Jotai loadable</b>异步 atom 必须用 loadable 包裹，避免组件 Suspense 抖动和未捕获的 reject。</li>
+                        <li><b>⑧ 路由懒加载</b>路由级组件必须 <code>React.lazy</code> + 动态 import，避免一次性打包。</li>
+                    </ul>
+                </article>
+                <details class="doc-card" id="doc-fe-aiop-rules">
+                    <summary>.claude/skills/code-validation/validators/fe-aiop/RULES.md</summary>
+                    <pre># fe-aiop Validation Rules
+
+---
+
+## Rule 1 — UI Components: `@baidu/aiop-ui` First
+
+**Severity**: Error
+
+**`@baidu/aiop-ui` components (must import from here):**
+`Button`, `Modal`, `Drawer`, `Tooltip`, `Spin`, `Tabs`, `Alert`, `Select`, `Input`, `Tag`, `DatePicker`, `Checkbox`, `Popconfirm`, `Pagination`, `ConfigProvider`
+
+**Allowed from `antd` directly (not in aiop-ui):**
+`Form`, `Row`, `Col`, `Space`, `Flex`, `Steps`, `Cascader`, `InputNumber`, `Divider`
+
+**Icons:** use `@baidu/aiop-icon`, never `@ant-design/icons`.
+
+```diff
+- import { Button, Modal } from 'antd';
++ import { Button, Modal } from '@baidu/aiop-ui';
+
+- import { PlusOutlined } from '@ant-design/icons';
++ import { PlusIcon } from '@baidu/aiop-icon';
+```
+
+---
+
+## Rule 2 — Styling: Tailwind + `.module.less`
+
+**Severity**: Error
+
+- Tailwind utilities for layout/spacing/color/typography.
+- `.module.less` for component-scoped complex styles.
+- Never `.module.css` (use `.module.less`).
+- No CSS-in-JS (except `antd-style` for theme config).
+- No inline `style` objects for static layout/design.
+
+---
+
+## Rule 3 — Data Fetching: `useRequest` / `atomWithQuery`
+
+**Severity**: Error
+
+**Allowed:**
+- `useRequest` from `@/hooks/useRequest`
+- `axiosRequest` from `@/hooks/useRequest` (imperative calls)
+- `atomWithQuery` / `atomWithMutation` from `jotai-tanstack-query`
+
+**Forbidden:**
+- `import { useQuery } from '@tanstack/react-query'`
+- `import { useDataQuery } from '@baidu/cheetah-hook'`
+- `import useSWR from 'swr'`
+- `useEffect` + raw `axios`/`fetch` for server-state loading
+
+---
+
+## Rule 4 — API Definitions: Centralized in `src/api/`
+
+**Severity**: Warning
+
+All API URLs must be defined as constants in `src/api/&lt;domain&gt;.ts`. No raw URL path strings (`/gomis/`, `/bjhmis/`, `/sarchmis/`, `/supplier/`) in component, hook, or atom files.
+
+```tsx
+// src/api/cockpit.ts
+const cockpitApi = {
+    log_api: '/gomis/clevermis/cockpit/op_logs',
+};
+export default cockpitApi;
+```
+
+---
+
+## Rule 5 — MPA Sub-App Boundary
+
+**Severity**: Error
+
+6 isolated sub-apps: `tianmu`, `imis`, `qinling`, `supplier`, `tiance`, `tianyan`. Cross-app page imports are forbidden.
+
+- Forbidden: `src/pages/&lt;appA&gt;/` importing from `src/pages/&lt;appB&gt;/`
+- Sharing must go through: `src/hooks/`, `src/api/`, `src/atoms/`, `src/proComponents/`, `src/modules/`, `src/utils/`, `src/components/`
+
+---
+
+## Rule 6 — proComponents: PageKey Registration
+
+**Severity**: Error
+
+`FilterPage` and `FormilyPage` from `src/proComponents/` require a `pageKey` registered in `ProPageKey`. Unregistered keys cause runtime errors (`GlobalPageDataMap` cannot resolve the atom).
+
+Flag when:
+- `pageKey` is a string literal not in `ProPageKey`
+- New `FilterPage`/`FormilyPage` added without a `ProPageKey` entry
+
+---
+
+## Rule 7 — Jotai Async Atoms: `loadable()` Wrapper
+
+**Severity**: Warning
+
+Async atoms consumed in render must use `loadable()` from `jotai/utils`. Access pattern: `{ state, data, error }`.
+
+Flag when:
+- Async atom exported without a `loadable()` wrapper
+- Component reads async atom directly via `useAtomValue` without `loadable`
+
+---
+
+## Rule 8 — Route: Lazy Loading Required
+
+**Severity**: Error
+
+Route files (`src/routes/*Routes.tsx`) must use `React.lazy()` for page components. The `element` field in `PageRouteType` must be a `LazyExoticComponent`.
+
+Flag when:
+- Static `import` of a page component in a route file
+- `element` value not wrapped in `lazy()`</pre>
+                </details>
+
+                <article class="doc-intro" aria-labelledby="doc-common-rules-title">
+                    <h3 id="doc-common-rules-title">code-validation validators/common/RULES.md <span class="tag">通用 CR 层</span></h3>
+                    <p class="role"><strong>作用：</strong>所有前端仓库共用的底线规则。code-validation 进入任何项目时都先加载它，再叠加项目专属规则，构成"通用 + 项目"两层断言。</p>
+                    <h4>内部框架拆解</h4>
+                    <ul class="framework">
+                        <li><b>① 类型安全</b>禁止 <code>any</code>，必须用具体类型或 <code>unknown</code> + 守卫；保证 TS 类型推导链不断。</li>
+                        <li><b>② 调试残留</b>禁止 <code>console.log</code> 进主分支；调试日志必须走团队约定的 logger。</li>
+                        <li><b>③ useEffect 清理</b>带订阅 / 定时器 / 监听 的 useEffect 必须返回清理函数，防止内存泄漏和重复触发。</li>
+                        <li><b>④ 单一主导出</b>每个模块文件保持单一主导出（default 或 named），避免一个文件成为"什么都往里塞"的杂货铺。</li>
+                    </ul>
+                </article>
+                <details class="doc-card" id="doc-common-rules">
+                    <summary>.claude/skills/code-validation/validators/common/RULES.md</summary>
+                    <pre># Common Validation Rules
+
+&gt; These rules apply to **all repositories**, loaded alongside any repo-specific rules.
+&gt; All findings here are **Warning** severity unless a repo-specific rule escalates the same topic to Error.
+
+---
+
+## TypeScript
+
+### Avoid `any` type
+
+`any` silences the type checker and hides real bugs. Use `unknown` with narrowing, or define an explicit interface.
+
+```ts
+// ❌ any hides type errors
+function process(data: any) { ... }
+
+// ✅ explicit type
+function process(data: UserPayload) { ... }
+
+// ✅ unknown + narrowing
+function process(data: unknown) {
+  if (isUserPayload(data)) { ... }
+}
+```
+
+### No `console.log` in production paths
+
+Remove debug logs before merging. Use a structured logger (e.g., `logger.info(...)`) if runtime logging is genuinely needed.
+
+---
+
+## React
+
+### `useEffect` cleanup
+
+Every effect that registers a subscription, event listener, or timer must return a cleanup function. Missing cleanup causes memory leaks on unmount.
+
+```ts
+// ❌ missing cleanup — memory leak on unmount
+useEffect(() =&gt; {
+  window.addEventListener('resize', handler);
+}, []);
+
+// ✅ cleanup returned
+useEffect(() =&gt; {
+  window.addEventListener('resize', handler);
+  return () =&gt; window.removeEventListener('resize', handler);
+}, []);
+```
+
+### Single primary export per component file
+
+A file named `Button.tsx` should export `Button` as its primary export. Utility helpers should be unexported or moved to a shared utilities module. This keeps imports predictable and avoids accidental re-exports.</pre>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <p class="footer-note">建议访问方式：本地启动项目后打开 <code>/skills-rule-map.html</code>；也可以直接用浏览器打开 <code>public/skills-rule-map.html</code>。</p>
+</main>
+<script>
+const readerCopy = {
+    intent: ['用户意图识别', '先判断这次任务属于哪一类，因为不同任务会触发不同 Skill：例如 UI 改动必须走 visual-verify，代码变更必须走 code-validation，安全扫描必须走 code-security-test。'],
+    always: ['alwaysApply 仓库规则', '.comate/rules/*.mdr 是仓库级常驻规则。它不等用户点名，进入 fe-aiop 后就先约束目录、启动、UI、校验和视觉验证流程。'],
+    skill: ['Skill 匹配与加载', '当任务命中特定能力时，必须先加载对应 Skill。Skill 会带来专门工具、执行顺序和验证要求，比通用经验更权威。'],
+    gate: ['Gate 闭环', '实现不是终点。代码变更必须进入 code-validation 审查，UI 变更必须进入 visual-verify，用检查结果决定是否能交付。'],
+    base: ['base.mdr', '它是总闸：负责 Agent 怎么启动、什么时候需要 UI 设计规则、删除入口颜色、代码校验 gate 和视觉验证 gate。'],
+    project: ['01-project-introduce.mdr', '它是事实层：说明 fe-aiop 是什么项目、技术栈是什么、src 目录如何分层，以及新文件应该放在哪里。'],
+    style: ['02-programming-style.mdr', '它是风格层：限制文件体量、函数职责、命名方式和复用优先级，让新增代码保持仓库一致性。'],
+    'repo-rules': ['fe-aiop/RULES.md', '它是项目 CR 断言层：code-validation 针对 fe-aiop 加载后，用它检查组件来源、样式方案、请求方式、MPA 边界、ProPageKey、Jotai 和路由懒加载。'],
+    'common-rules': ['common/RULES.md', '它是通用 CR 底线：所有前端仓库都适用，重点检查 any、console.log、useEffect 清理和单一主导出。'],
+    'ui-design': ['先读 UI 设计规则', '只要涉及布局、样式、间距、颜色、交互或响应式，就先进入 UI 规则读取阶段，不能写完再补设计判断。'],
+    'ui-cdp': ['确认 CDP 可用', 'CDP（Chrome DevTools Protocol）是 Chrome 内置的远程控制接口，通过 localhost:9222 的 WebSocket 对外暴露。visual-verify 通过它查询 DOM、截图（真实渲染）、执行 JS、监听 console——本质是把 F12 开发者工具的操作自动化。9222 不通时，无法获取真实渲染结果，不能伪造视觉验证。'],
+    'ui-proof': ['DOM + 截图证据', '最终必须有 DOM 断言、截图证据和 console 检查支撑，证明页面不仅代码改了，而且真实渲染正确。']
+};
+
+const reader = document.querySelector('[data-reader]');
+const liveTitle = document.querySelector('[data-live-title]');
+const liveDesc = document.querySelector('[data-live-desc]');
+const nodes = Array.from(document.querySelectorAll('.reader-node'));
+const notes = Array.from(document.querySelectorAll('.reader-note'));
+
+function activateReaderNode(key) {
+    const copy = readerCopy[key];
+    if (!copy || !reader || !liveTitle || !liveDesc) {
+        return;
+    }
+    reader.classList.add('is-filtering');
+    liveTitle.textContent = copy[0];
+    liveDesc.textContent = copy[1];
+    nodes.forEach(node => node.classList.toggle('is-active', node.dataset.node === key));
+    notes.forEach(note => note.classList.toggle('is-active', note.dataset.note === key));
+}
+
+nodes.forEach(node => {
+    node.addEventListener('mouseenter', () => activateReaderNode(node.dataset.node));
+    node.addEventListener('focus', () => activateReaderNode(node.dataset.node));
+});
+</script>
+</body>
+</html>
